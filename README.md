@@ -1,31 +1,55 @@
-Design Overview
+# Fixed-Size Hash Table with Linear Probing in C++
 
-Step-by-Step Summary
+## 🚀 Design Overview
 
-Parsing Input Dataset: Words were read from a file (unique_words.csv) with one word per line. These were cleaned and inserted into the hash table with an incrementing integer value.
+### Step-by-Step Summary
 
-Fixed-Size Hash Table: Implemented using std::array with a table size of 32,753, a prime number chosen to reduce collisions.
+- **Parsing Input Dataset**  
+  Words were read from a file (`unique_words.csv`) with one word per line. These were cleaned and inserted into the hash table with an incrementing integer value as the associated value.
 
-Hash Function: A polynomial rolling hash was used for string keys to ensure uniform distribution across the table.
+- **Fixed-Size Hash Table**  
+  Implemented using `std::array` with a table size of **32,753**, a large prime number chosen to reduce hash collisions and support efficient probing.
 
-Collision Handling: Linear probing was used to resolve collisions. To keep operations O(1) in practice, we track probe depth and designed for low load factor.
+- **Hash Function**  
+  A **polynomial rolling hash** was used for string keys to ensure uniform distribution across the hash table.
 
-Order Tracking: Two arrays were used:
+- **Collision Handling**  
+  **Linear probing** was used to resolve collisions. To keep operations `O(1)` in practice, we maintained a low load factor and tracked probe depth for performance insights.
 
-order: keeps track of the insertion/update order of occupied slots.
+- **Order Tracking**  
+  Two additional arrays were used:
+  - `order[]`: Tracks insertion/update order of entries.
+  - `order_index[]`: Maps a table index to its position in the order array for constant-time updates.
 
-order_index: maps from a table index to its position in the order array.
+- **Removal & Reordering**  
+  Deleted entries were cleared by resetting the `Entry{}` at that index. The order arrays were updated using a **swap-remove** technique for `O(1)` deletions and reordering.
 
-Removal & Reordering: Removed entries reset the slot to an empty Entry{} and updated the order arrays using swap-remove in O(1) time.
+- **Auxiliary Info**  
+  During insertion, we tracked the **maximum probe count** needed to locate an empty slot — this provides practical insight into hash distribution efficiency.
 
-Auxiliary Info: We tracked the maximum number of probes required during insertion to assess performance.
+---
 
-Performance & Results
+## 📊 Performance & Results
 
-Number of inserted words: ~10,974
+- **Number of inserted words**: ~10,974  
+- **Table size**: 32,753  
+- **Load factor**: ~33% (ensures minimal clustering)  
+- **Maximum probe count during insertions**: 17  
 
-Table size: 32,753
+---
 
-Load factor: ~33% (ensures low clustering)
+## ⚙️ Build Instructions
 
-Maximum probe count: 17
+### 🧪 Build from Terminal
+
+Make sure the following files are in your project:
+   - `main.cpp`
+   - `HashTable.cpp`
+   - `HashTable.h`
+   - `unique_words.csv`
+     
+You can compile manually using `g++`:
+
+```bash
+g++ -std=c++17 -g main.cpp HashTable.cpp -o main
+./main
